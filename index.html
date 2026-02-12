@@ -67,14 +67,48 @@
 
         /* --- YAZDIRMA (PRINT) --- */
         @media print {
-            body { background: white; padding: 0; }
+            body { background: white; padding: 0; margin: 0; }
             
             /* ÖZEL RAPOR YAZDIRILIYORSA */
             body.print-special * { display: none !important; } 
             body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
-            body.print-special .fail-table { display: table !important; width: 100%; border-collapse: collapse; font-size: 12px; }
-            body.print-special .fail-table th { border-bottom: 2px solid black; text-align: left; padding: 5px; }
-            body.print-special .fail-table td { border-bottom: 1px solid #ccc; padding: 8px 5px; }
+            
+            /* DASHBOARD STİLİ (SENİN İSTEDİĞİN KUTU KUTU YAPI) */
+            .fail-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr; /* Yan yana 3 kutu */
+                gap: 15px;
+                margin-top: 20px;
+                width: 100%;
+            }
+            
+            .fail-card {
+                border: 2px solid #000; /* Kalın siyah çerçeve */
+                border-radius: 10px; /* Köşeler yuvarlak */
+                padding: 10px;
+                break-inside: avoid; /* Sayfa sonunda ortadan bölünmesin */
+                font-family: 'Poppins', sans-serif;
+                font-size: 11px;
+                box-sizing: border-box;
+                background: #fff;
+            }
+
+            .fail-card strong {
+                display: block;
+                color: #555;
+                font-size: 9px;
+                text-transform: uppercase;
+                margin-bottom: 2px;
+            }
+
+            .fail-card div {
+                margin-bottom: 6px;
+                color: #000;
+                font-weight: 600;
+                border-bottom: 1px dashed #ccc;
+                padding-bottom: 2px;
+            }
+            .fail-card div:last-child { border: none; margin: 0; }
 
             /* NORMAL GÜNLÜK YAZDIRILIYORSA */
             body:not(.print-special) .header-card, 
@@ -104,22 +138,15 @@
 <body>
 
 <div id="failureReportPage">
-    <div style="text-align:center; margin-bottom:20px;">
-        <h2 style="margin:0;">BEKLEYEN TÜM İŞLER RAPORU</h2>
+    <div style="text-align:center; margin-bottom:20px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+        <h2 style="margin:0;">BEKLEYEN İŞLER (DASHBOARD)</h2>
         <p style="margin:5px 0;">ÖZLİDER TÜKETİM & ŞÖLEN</p>
         <small id="failReportDate">Rapor Tarihi: ...</small>
     </div>
-    <table class="fail-table">
-        <thead>
-            <tr>
-                <th style="width:120px;">TARİH</th>
-                <th>MÜŞTERİ</th>
-                <th>FATURA NO</th>
-                <th>DURUM</th>
-            </tr>
-        </thead>
-        <tbody id="failTableBody"></tbody>
-    </table>
+    
+    <div id="failCardContainer" class="fail-grid">
+        </div>
+
     <div style="margin-top:30px; border-top:2px solid black; padding-top:10px; font-size:13px;">
         <h4 style="margin:0 0 10px 0;">TARİH BAZLI ÖZET:</h4>
         <div id="failSummaryList"></div>
@@ -237,7 +264,7 @@
     window.loadData = loadData; window.saveMeta = saveMeta; window.addNewRow = addNewRow; window.deleteItem = deleteItem;
     window.runPendingReport = runPendingReport;
 
-    // --- BEKLEYENLERİ RAPORLA (GARANTİ ÇÖZÜM) ---
+    // --- BEKLEYENLERİ DASHBOARD KUTULARI OLARAK RAPORLA ---
     async function runPendingReport() {
         if(!isAdmin) return;
         const loader = document.getElementById('loader');
@@ -252,8 +279,7 @@
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 if (data.items && Array.isArray(data.items)) {
-                    // MANTIK DEĞİŞTİ: YEŞİL (delivered) OLMAYAN HER ŞEY RAPORA GİRER!
-                    // Bu sayede "pending" (gri) ve "failed" (kırmızı) ve "undefined" hepsi gelir.
+                    // YEŞİL (delivered) OLMAYAN HER ŞEY
                     const pendings = data.items.filter(item => item.status !== 'delivered');
                     
                     if (pendings.length > 0) {
@@ -262,7 +288,6 @@
                         statsByDate[fmtDate] += pendings.length;
 
                         pendings.forEach(f => {
-                            // Durumu Türkçe yazalım
                             let durumText = 'Bekliyor';
                             if(f.status === 'failed') durumText = 'EDİLMEDİ';
                             
@@ -278,17 +303,34 @@
             });
 
             if (allPendings.length === 0) {
-                alert("Harika! Sistemde bekleyen (işlem görmemiş) hiç sipariş yok. Hepsi tamamlanmış.");
+                alert("Harika! Sistemde bekleyen hiç sipariş yok.");
                 loader.style.display = 'none';
                 return;
             }
 
             allPendings.sort((a, b) => new Date(a.date.split('.').reverse().join('-')) - new Date(b.date.split('.').reverse().join('-')));
-            const tbody = document.getElementById('failTableBody');
-            tbody.innerHTML = '';
+            
+            // KUTU YAPISI OLUŞTURMA
+            const container = document.getElementById('failCardContainer');
+            container.innerHTML = '';
             
             allPendings.forEach(f => {
-                tbody.innerHTML += `<tr><td>${f.date}</td><td>${f.name}</td><td>${f.invoice}</td><td>${f.status}</td></tr>`;
+                // Burada çizdiğin kutuyu yapıyoruz
+                container.innerHTML += `
+                    <div class="fail-card">
+                        <strong>Tarih:</strong>
+                        <div>${f.date}</div>
+                        
+                        <strong>Müşteri Unvanı:</strong>
+                        <div>${f.name}</div>
+                        
+                        <strong>Fatura No:</strong>
+                        <div>${f.invoice}</div>
+                        
+                        <strong>Durum:</strong>
+                        <div style="color:red;">${f.status}</div>
+                    </div>
+                `;
             });
 
             const summaryDiv = document.getElementById('failSummaryList');
@@ -312,7 +354,6 @@
         }
     }
 
-    // --- STANDART FONKSİYONLAR ---
     function loadData() {
         const dateInput = document.getElementById('queryDate').value;
         if (!dateInput) return;
