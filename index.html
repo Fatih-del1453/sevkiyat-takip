@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- MEVCUT TASARIM DEĞİŞMEDİ --- */
+        /* --- MEVCUT TASARIM KORUNDU --- */
         :root {
             --bg-main: #FDF3E7; --bg-card: #FFFFFF; --bg-input: #FFFBF5;
             --text-chocolate: #4A2C2A; --text-gold: #CFA670; --brand-red: #D32F2F;
@@ -19,7 +19,7 @@
         }
 
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); margin: 0; padding: 15px; min-height: 100vh; color: var(--text-chocolate); }
-        .container { max-width: 900px; margin: 0 auto; padding-bottom: 80px; display: none; /* Seçim yapılana kadar gizli */ }
+        .container { max-width: 900px; margin: 0 auto; padding-bottom: 80px; display: none; }
 
         .header-card { background: var(--bg-card); border-radius: var(--radius-xl); padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft); margin-bottom: 25px; border-bottom: 3px solid var(--text-gold); }
         .logo-frame { background: #fff; padding: 8px 15px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid rgba(207, 166, 112, 0.2); display: flex; align-items: center; justify-content: center; height: 60px; width: 100px; }
@@ -63,7 +63,7 @@
 
         .loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(253, 243, 231, 0.95); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; color: var(--text-chocolate); }
 
-        /* --- YENİ SEÇİM EKRANI (LOGIN YERİNE) --- */
+        /* --- SEÇİM EKRANI --- */
         #selectionPage {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-main); z-index: 5000;
@@ -73,27 +73,71 @@
             font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-chocolate);
             text-align: center; margin-bottom: 40px;
         }
-        .card-container {
-            display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;
-        }
+        .card-container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
         .role-card {
             background: white; width: 160px; height: 180px;
             border-radius: 20px; box-shadow: 0 10px 30px rgba(74, 44, 42, 0.15);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; transition: transform 0.2s, border 0.2s;
-            border: 3px solid transparent;
+            cursor: pointer; transition: transform 0.2s, border 0.2s; border: 3px solid transparent;
         }
         .role-card:hover { transform: translateY(-5px); }
         .role-card i { font-size: 3rem; margin-bottom: 15px; color: var(--text-gold); }
         .role-card h3 { margin: 0; font-size: 1rem; font-weight: 800; color: var(--text-chocolate); }
-        
         .role-card.admin:hover { border-color: var(--brand-red); }
         .role-card.admin i { color: var(--brand-red); }
-        
         .role-card.driver:hover { border-color: var(--status-success); }
         .role-card.driver i { color: var(--status-success); }
 
-        /* --- ARAMA MODALI --- */
+        /* --- LODI AI CHATBOT (AKILLI VERSİYON) --- */
+        .lodi-trigger {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 65px; height: 65px; background: linear-gradient(135deg, #FF6F00, #E65100);
+            border-radius: 50%; box-shadow: 0 10px 25px rgba(255, 111, 0, 0.4);
+            display: none; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 4000; transition: transform 0.3s;
+            border: 3px solid #fff; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 111, 0, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 111, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 111, 0, 0); } }
+        .lodi-trigger:hover { transform: scale(1.1); animation: none; }
+        .lodi-trigger i { color: white; font-size: 30px; }
+
+        .lodi-chat-window {
+            position: fixed; bottom: 100px; right: 20px;
+            width: 340px; height: 500px; background: white;
+            border-radius: 20px; box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            display: none; flex-direction: column; z-index: 4001;
+            overflow: hidden; border: 1px solid #eee; font-family: 'Poppins', sans-serif;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .lodi-header {
+            background: linear-gradient(135deg, #FF6F00, #EF6C00);
+            padding: 15px; color: white; display: flex; align-items: center; gap: 10px;
+            font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .lodi-avatar { width: 35px; height: 35px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #E65100; font-size:18px; }
+        
+        .lodi-messages { flex: 1; padding: 15px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 12px; }
+        
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; position: relative; }
+        .msg.lodi { background: white; border-top-left-radius: 0; align-self: flex-start; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; color: #444; }
+        .msg.lodi strong { color: #E65100; }
+        .msg.user { background: #FF6F00; color: white; border-bottom-right-radius: 0; align-self: flex-end; box-shadow: 0 4px 15px rgba(255, 111, 0, 0.3); }
+
+        .lodi-input-area { padding: 12px; background: white; border-top: 1px solid #eee; display: flex; gap: 8px; flex-direction: column; }
+        .lodi-input-row { display: flex; gap: 8px; width: 100%; }
+        .lodi-input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 25px; outline: none; font-size: 0.9rem; background: #f9f9f9; }
+        .lodi-input:focus { border-color: #FF6F00; background: #fff; }
+        .lodi-send { background: #FF6F00; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; box-shadow: 0 4px 10px rgba(255, 111, 0, 0.3); }
+        .lodi-send:hover { background: #E65100; }
+        
+        /* Hızlı Cevap Butonları */
+        .lodi-quick-chips { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; }
+        .chip { white-space: nowrap; padding: 6px 12px; background: #FFF3E0; color: #E65100; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; border: 1px solid #FFE0B2; transition: all 0.2s; }
+        .chip:hover { background: #FF6F00; color: white; }
+
+        /* --- DİĞER CSS --- */
         #searchModal {
             display: none; position: fixed; top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.5); z-index: 2000; align-items: flex-start; justify-content: center;
@@ -110,7 +154,6 @@
         .search-item:last-child { border-bottom: none; }
         .search-tag { padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; }
 
-        /* --- GİZLİ RAPOR ALANI --- */
         #failureReportPage { display: none; }
         .print-header { display: none; }
         .return-note-print { display: none; }
@@ -132,9 +175,11 @@
             body:not(.print-special) .control-grid,
             body:not(.print-special) .report-section,
             body:not(.print-special) #searchModal,
-            body:not(.print-special) #selectionPage, /* SEÇİM EKRANI GİZLENSİN */
+            body:not(.print-special) #selectionPage,
             body:not(.print-special) .card-header button, 
-            body:not(.print-special) .btn-group { display: none !important; }
+            body:not(.print-special) .btn-group,
+            body:not(.print-special) .lodi-trigger, 
+            body:not(.print-special) .lodi-chat-window { display: none !important; }
 
             /* İçeriği göster */
             body:not(.print-special) .container { display: block !important; width: 100%; max-width: 100%; padding: 0; margin: 0; box-shadow: none; }
@@ -147,21 +192,16 @@
                 font-family: 'Arial', sans-serif;
             }
             .print-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
-
-            /* Kartları Basitleştir */
             body:not(.print-special) .card {
                 border: 1px solid #ddd; border-left-width: 5px; box-shadow: none;
                 margin-bottom: 10px; padding: 10px; page-break-inside: avoid;
             }
-            
-            /* Inputlar */
             body:not(.print-special) .premium-input {
                 border: none !important; background: transparent !important;
                 box-shadow: none !important; padding: 0; margin: 0;
                 font-weight: bold; color: #000; width: auto; height: auto;
                 display: inline-block;
             }
-            
             body:not(.print-special) .return-note-print {
                 display: block !important; font-size: 11px; font-style: italic; color: #D32F2F; margin-top: 5px;
             }
@@ -216,11 +256,36 @@
             <h3>YÖNETİCİ</h3>
             <p style="font-size:0.8rem; color:#666; margin-top:5px;">Tam Yetki</p>
         </div>
-        
         <div class="role-card driver" onclick="selectRole('driver')">
             <i class="fas fa-truck"></i>
             <h3>ŞOFÖR</h3>
             <p style="font-size:0.8rem; color:#666; margin-top:5px;">Durum & İade</p>
+        </div>
+    </div>
+</div>
+
+<div class="lodi-trigger" id="lodiTrigger" onclick="toggleLodi()">
+    <i class="fas fa-robot"></i>
+</div>
+
+<div class="lodi-chat-window" id="lodiChat">
+    <div class="lodi-header">
+        <div class="lodi-avatar"><i class="fas fa-paw"></i></div>
+        <span>LODİ ASİSTAN</span>
+        <span onclick="toggleLodi()" style="margin-left:auto; cursor:pointer;">&times;</span>
+    </div>
+    <div class="lodi-messages" id="lodiMsgs">
+        </div>
+    <div class="lodi-input-area">
+        <div class="lodi-quick-chips">
+            <div class="chip" onclick="askLodi('Durum nedir?')">📊 Durum Nedir?</div>
+            <div class="chip" onclick="askLodi('İadeler neler?')">↩️ İadeler</div>
+            <div class="chip" onclick="askLodi('Bekleyenleri göster')">⏳ Bekleyenler</div>
+            <div class="chip" onclick="askLodi('Yoruldum')">☕ Mola</div>
+        </div>
+        <div class="lodi-input-row">
+            <input type="text" id="lodiInput" class="lodi-input" placeholder="Örn: 'Şölen market durumu ne?'" onkeypress="handleLodiKey(event)">
+            <button class="lodi-send" onclick="askLodiManual()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 </div>
@@ -344,24 +409,169 @@
     let currentDateKey = "";
     let unsubscribe = null;
 
-    // --- YENİ GİRİŞ FONKSİYONU (KART SEÇİMİ) ---
-    window.selectRole = (role) => {
-        if (role === 'admin') {
-            isAdmin = true;
-        } else {
-            isAdmin = false;
+    // --- GELİŞMİŞ LODİ AI MOTORU ---
+    window.toggleLodi = () => {
+        const win = document.getElementById('lodiChat');
+        win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+        if(win.style.display === 'flex') {
+            document.getElementById('lodiInput').focus();
+            if(document.getElementById('lodiMsgs').children.length === 0) {
+                 addMsg(`Merhaba ${isAdmin ? 'Yöneticim' : 'Kaptan'}! 👋 Ben LODİ.<br>Listedeki her şeyi anlık analiz edebilirim.<br>Örn: <i>"Ahmet market durumu ne?"</i>`, 'lodi');
+            }
         }
+    }
+
+    window.handleLodiKey = (e) => { if(e.key === 'Enter') askLodiManual(); }
+    window.askLodiManual = () => { askLodi(document.getElementById('lodiInput').value); }
+
+    window.askLodi = (questionText) => {
+        const txt = questionText.trim();
+        if(!txt) return;
+
+        addMsg(txt, 'user');
+        document.getElementById('lodiInput').value = '';
+
+        // Yapay düşünme efekti
+        const thinkingId = 'think-' + Math.random();
+        addMsg('<i class="fas fa-circle-notch fa-spin"></i> Analiz ediyorum...', 'lodi', thinkingId);
+
+        setTimeout(() => {
+            document.getElementById(thinkingId).remove();
+            const reply = analyzeLodiData(txt.toLowerCase());
+            addMsg(reply, 'lodi');
+        }, 700);
+    }
+
+    function addMsg(txt, type, id=null) {
+        const box = document.getElementById('lodiMsgs');
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        if(id) div.id = id;
+        div.innerHTML = txt;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function analyzeLodiData(q) {
+        // --- 1. VERİ HAZIRLIĞI ---
+        const items = currentData.items || [];
+        const delivered = items.filter(i => i.status === 'delivered');
+        const failed = items.filter(i => i.status === 'failed');
+        const pending = items.filter(i => i.status !== 'delivered' && i.status !== 'failed');
+        const returns = items.filter(i => i.hasReturn);
+        const driver = document.getElementById('driverInput').value || 'Tanımsız';
+
+        // --- 2. AKILLI EŞLEŞTİRME (Query Matching) ---
+
+        // A) ÖZEL ARAMA: İçinde belirli bir isim veya fatura no geçiyor mu?
+        // Örn: "Şölen market ne durumda?" -> "şölen" kelimesini ara
+        const meaningfulWords = q.split(' ').filter(w => w.length > 3 && !['nedir','durumu','nasıl','var','yok','göster','market','bakkal'].includes(w));
+        
+        if (meaningfulWords.length > 0) {
+            let foundItems = [];
+            meaningfulWords.forEach(word => {
+                items.forEach(item => {
+                    if ((item.name && item.name.toLowerCase().includes(word)) || (item.invoice && item.invoice.includes(word))) {
+                        if(!foundItems.includes(item)) foundItems.push(item);
+                    }
+                });
+            });
+
+            if (foundItems.length > 0) {
+                let report = `<strong>🔍 ${foundItems.length} Kayıt Buldum:</strong><br>`;
+                foundItems.forEach(item => {
+                    let stIcon = item.status === 'delivered' ? '✅' : (item.status === 'failed' ? '❌' : '⏳');
+                    let stText = item.status === 'delivered' ? 'Teslim' : (item.status === 'failed' ? 'Edilmedi' : 'Bekliyor');
+                    report += `<br>${stIcon} <strong>${item.name}</strong><br>Durum: ${stText}`;
+                    if(item.hasReturn) report += `<br>⚠️ İade: ${item.returnNote}`;
+                    if(item.status === 'failed') report += `<br>⛔ Sebep: ${item.failReason}`;
+                    report += `<hr style="margin:5px 0; border:0; border-top:1px dashed #ccc;">`;
+                });
+                return report;
+            }
+        }
+
+        // B) GENEL SORULAR
+        if (q.includes('durum') || q.includes('özet') || q.includes('rapor') || q.includes('nasılsın')) {
+            const ratio = items.length > 0 ? Math.round((delivered.length / items.length) * 100) : 0;
+            let mood = ratio > 80 ? "Harika gidiyoruz! 🚀" : (ratio > 50 ? "Yarıladık sayılır. 👍" : "Daha yolumuz var. 🐢");
+            
+            return `
+                <strong>📊 Güncel Durum Raporu</strong><br><br>
+                🚛 <strong>Toplam Yük:</strong> ${items.length} Adet<br>
+                ✅ <strong>Teslim Edilen:</strong> ${delivered.length}<br>
+                ❌ <strong>Teslim Edilmeyen:</strong> ${failed.length}<br>
+                ⏳ <strong>Bekleyen:</strong> ${pending.length}<br><br>
+                📈 <strong>Başarı Oranı:</strong> %${ratio}<br>
+                ${mood}
+            `;
+        }
+
+        if (q.includes('iade') || q.includes('geri')) {
+            if (returns.length === 0) return "✅ Müjde! Şu ana kadar sisteme girilmiş hiç iade yok.";
+            let retMsg = `<strong>⚠️ Toplam ${returns.length} İade Var:</strong><br>`;
+            returns.forEach(r => {
+                retMsg += `<br>🔸 <strong>${r.name}:</strong> ${r.returnNote || 'Sebep girilmedi'}`;
+            });
+            return retMsg;
+        }
+
+        if (q.includes('bekleyen') || q.includes('kalan')) {
+            if (pending.length === 0) return "🎉 Harika! Bekleyen hiç iş kalmadı, hepsi tamamlandı.";
+            let penMsg = `<strong>⏳ Bekleyen ${pending.length} Nokta Var:</strong><br>`;
+            // Çok fazlaysa sadece sayısını söyle
+            if(pending.length > 5) return `Sırada bekleyen <strong>${pending.length}</strong> nokta daha var. Hızlanalım kaptan! 🚛`;
+            
+            pending.forEach(p => {
+                penMsg += `<br>📍 ${p.name}`;
+            });
+            return penMsg;
+        }
+
+        if (q.includes('teslim edilmeyen') || q.includes('başarısız')) {
+            if (failed.length === 0) return "Harika! Şu ana kadar teslim edilemeyen yük yok.";
+            let fMsg = `<strong>❌ ${failed.length} Noktada Sorun Var:</strong><br>`;
+            failed.forEach(f => {
+                fMsg += `<br>🛑 <strong>${f.name}</strong>: ${f.failReason}`;
+            });
+            return fMsg;
+        }
+
+        // C) SOHBET & MOTİVASYON
+        if (q.includes('yoruldum') || q.includes('sıkıldım') || q.includes('mola')) {
+            return `Canın sağ olsun Kaptan! ☕ Bir çay molası ver, derin bir nefes al. Unutma, Özlider kalitesi senin emeğinle taşınıyor. Dinlenince devam ederiz! 💪`;
+        }
+        
+        if (q.includes('selam') || q.includes('merhaba')) {
+            return `Aleyküm selam Kaptan ${driver}! 👋 Tekerine taş değmesin. Bugün operasyon nasıl gidiyor?`;
+        }
+        
+        if (q.includes('teşekkür') || q.includes('sağol')) {
+            return `Rica ederim! Ben her zaman buradayım (Sağ altta). 😉`;
+        }
+
+        // Anlayamadım durumu
+        return `🤔 Bunu tam anlayamadım. Şunları deneyebilirsin:<br>
+        - "Durum ne?"<br>
+        - "İadeleri göster"<br>
+        - "Şölen market durumu"<br>
+        - "Yoruldum"`;
+    }
+
+    // --- MEVCUT JS FONKSİYONLARI (KORUNDU) ---
+    window.selectRole = (role) => {
+        if (role === 'admin') { isAdmin = true; } else { isAdmin = false; }
         initSystem();
     };
 
     function initSystem() {
-        document.getElementById('selectionPage').style.display = 'none'; // Giriş ekranını gizle
-        document.getElementById('mainContainer').style.display = 'block'; // Ana ekranı aç
+        document.getElementById('selectionPage').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'block';
+        document.getElementById('lodiTrigger').style.display = 'flex';
 
-        // Buton Gizleme Mantığı (Yetkiye Göre)
         if (!isAdmin) {
-            document.getElementById('btnNew').style.display = 'none'; // Şoför yeni ekleyemez
-            document.getElementById('btnReport').style.display = 'none'; // Şoför rapor alamaz
+            document.getElementById('btnNew').style.display = 'none';
+            document.getElementById('btnReport').style.display = 'none';
         } else {
             document.getElementById('btnNew').style.display = 'flex';
             document.getElementById('btnReport').style.display = 'flex';
@@ -633,7 +843,7 @@
 
     async function saveMeta() {
         if (!currentDateKey) return;
-        if (!isAdmin) return; // Şoför değiştiremez
+        if (!isAdmin) return; 
         currentData.meta = { driver: document.getElementById('driverInput').value, plate: document.getElementById('plateInput').value };
         updatePrintInfo();
         const docRef = doc(db, "sevkiyatlar", currentDateKey);
@@ -679,7 +889,6 @@
     }
 
     window.cycleStatus = (index) => {
-        // Şoför de yapabilir
         const statusMap = { 'pending': 'delivered', 'delivered': 'failed', 'failed': 'pending' };
         currentData.items[index].status = statusMap[currentData.items[index].status || 'pending'];
         if(currentData.items[index].status !== 'failed') currentData.items[index].failReason = '';
@@ -687,7 +896,6 @@
     }
 
     window.toggleReturn = (index) => {
-        // Şoför de yapabilir
         currentData.items[index].hasReturn = !currentData.items[index].hasReturn;
         if(!currentData.items[index].hasReturn) currentData.items[index].returnNote = '';
         pushToCloud();
