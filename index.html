@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- MEVCUT EKRAN TASARIMI (DOKUNULMADI) --- */
+        /* --- MEVCUT TASARIM DEĞİŞMEDİ --- */
         :root {
             --bg-main: #FDF3E7; --bg-card: #FFFFFF; --bg-input: #FFFBF5;
             --text-chocolate: #4A2C2A; --text-gold: #CFA670; --brand-red: #D32F2F;
@@ -19,7 +19,7 @@
         }
 
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); margin: 0; padding: 15px; min-height: 100vh; color: var(--text-chocolate); }
-        .container { max-width: 900px; margin: 0 auto; padding-bottom: 80px; }
+        .container { max-width: 900px; margin: 0 auto; padding-bottom: 80px; display: none; /* Seçim yapılana kadar gizli */ }
 
         .header-card { background: var(--bg-card); border-radius: var(--radius-xl); padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft); margin-bottom: 25px; border-bottom: 3px solid var(--text-gold); }
         .logo-frame { background: #fff; padding: 8px 15px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid rgba(207, 166, 112, 0.2); display: flex; align-items: center; justify-content: center; height: 60px; width: 100px; }
@@ -33,7 +33,7 @@
         .premium-input:focus { border-color: var(--brand-red); }
         .premium-input:disabled { background: transparent; color: #888; border-color: transparent; box-shadow: none; cursor: not-allowed; }
 
-        .admin-panel { display: none; justify-content: flex-end; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .admin-panel { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .btn-action { background: linear-gradient(135deg, var(--brand-red), #B71C1C); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; box-shadow: 0 8px 20px rgba(211, 47, 47, 0.25); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .btn-print { background: linear-gradient(135deg, var(--text-chocolate), #2C1E1D); box-shadow: 0 8px 20px rgba(74, 44, 42, 0.25); }
         .btn-fail-report { background: linear-gradient(135deg, #FF9800, #EF6C00); box-shadow: 0 8px 20px rgba(239, 108, 0, 0.25); }
@@ -61,7 +61,37 @@
 
         @media (max-width: 600px) { .control-grid, .report-grid { grid-template-columns: 1fr; } .logo-frame { width: 70px; height: 50px; } .header-title { font-size: 1rem; } }
 
-        .loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(253, 243, 231, 0.95); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; color: var(--text-chocolate); }
+        .loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(253, 243, 231, 0.95); z-index: 1000; display: none; justify-content: center; align-items: center; flex-direction: column; color: var(--text-chocolate); }
+
+        /* --- YENİ SEÇİM EKRANI (LOGIN YERİNE) --- */
+        #selectionPage {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-main); z-index: 5000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .selection-title {
+            font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-chocolate);
+            text-align: center; margin-bottom: 40px;
+        }
+        .card-container {
+            display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;
+        }
+        .role-card {
+            background: white; width: 160px; height: 180px;
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(74, 44, 42, 0.15);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer; transition: transform 0.2s, border 0.2s;
+            border: 3px solid transparent;
+        }
+        .role-card:hover { transform: translateY(-5px); }
+        .role-card i { font-size: 3rem; margin-bottom: 15px; color: var(--text-gold); }
+        .role-card h3 { margin: 0; font-size: 1rem; font-weight: 800; color: var(--text-chocolate); }
+        
+        .role-card.admin:hover { border-color: var(--brand-red); }
+        .role-card.admin i { color: var(--brand-red); }
+        
+        .role-card.driver:hover { border-color: var(--status-success); }
+        .role-card.driver i { color: var(--status-success); }
 
         /* --- ARAMA MODALI --- */
         #searchModal {
@@ -80,10 +110,8 @@
         .search-item:last-child { border-bottom: none; }
         .search-tag { padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; }
 
-        /* --- GİZLİ RAPOR ALANI (EKRANDA GÖRÜNMEZ) --- */
+        /* --- GİZLİ RAPOR ALANI --- */
         #failureReportPage { display: none; }
-
-        /* --- PRINT HEADER (Normal ekranda gizle) --- */
         .print-header { display: none; }
         .return-note-print { display: none; }
 
@@ -91,88 +119,56 @@
         /* === KRİTİK ALAN: YAZDIRMA (PRINT) CSS === */
         /* ========================================= */
         @media print {
-            /* Temizlik */
             body { background: white; padding: 0; margin: 0; }
-            @page { size: A4 portrait; margin: 10mm; } /* A4 Dikey, Kenar boşluğu 10mm */
+            @page { size: A4 portrait; margin: 10mm; } 
             
-            /* Sadece Rapor Görülsün (Özel Rapor İçin) */
             body.print-special * { display: none !important; } 
             body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
 
-            /* --- GÜNLÜK YAZDIRMA AYARLARI (DÜZELTİLDİ) --- */
-            
-            /* 1. Gereksiz arayüz elemanlarını gizle */
+            /* Arayüzü gizle */
             body:not(.print-special) .header-card, 
             body:not(.print-special) .admin-panel, 
             body:not(.print-special) .loader, 
             body:not(.print-special) .control-grid,
             body:not(.print-special) .report-section,
             body:not(.print-special) #searchModal,
-            body:not(.print-special) .card-header button, /* Silme butonu */
-            body:not(.print-special) .btn-group { /* İşlem butonları */
-                display: none !important; 
-            }
+            body:not(.print-special) #selectionPage, /* SEÇİM EKRANI GİZLENSİN */
+            body:not(.print-special) .card-header button, 
+            body:not(.print-special) .btn-group { display: none !important; }
 
-            /* 2. Ana konteyneri ve listeyi görünür yap */
-            body:not(.print-special) .container { 
-                display: block !important; 
-                width: 100%; max-width: 100%; 
-                padding: 0; margin: 0; 
-                box-shadow: none; 
-            }
+            /* İçeriği göster */
+            body:not(.print-special) .container { display: block !important; width: 100%; max-width: 100%; padding: 0; margin: 0; box-shadow: none; }
             body:not(.print-special) .shipment-list { display: block !important; }
 
-            /* 3. Başlık Alanını (Şoför Bilgisi) Göster */
+            /* Başlık Alanı */
             body:not(.print-special) .print-header {
-                display: block !important;
-                margin-bottom: 20px;
-                border-bottom: 2px solid #4A2C2A;
-                padding-bottom: 10px;
+                display: block !important; margin-bottom: 20px;
+                border-bottom: 2px solid #4A2C2A; padding-bottom: 10px;
                 font-family: 'Arial', sans-serif;
             }
             .print-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
 
-            /* 4. Kartları Basitleştir (Mürekkep Dostu) */
+            /* Kartları Basitleştir */
             body:not(.print-special) .card {
-                border: 1px solid #ddd;
-                border-left-width: 5px; /* Durum rengi kalsın */
-                box-shadow: none;
-                margin-bottom: 10px;
-                padding: 10px;
-                page-break-inside: avoid;
+                border: 1px solid #ddd; border-left-width: 5px; box-shadow: none;
+                margin-bottom: 10px; padding: 10px; page-break-inside: avoid;
             }
             
-            /* 5. Inputları Düz Metin Gibi Göster */
+            /* Inputlar */
             body:not(.print-special) .premium-input {
-                border: none !important;
-                background: transparent !important;
-                box-shadow: none !important;
-                padding: 0;
-                margin: 0;
-                font-weight: bold;
-                color: #000;
-                width: auto;
-                height: auto;
+                border: none !important; background: transparent !important;
+                box-shadow: none !important; padding: 0; margin: 0;
+                font-weight: bold; color: #000; width: auto; height: auto;
                 display: inline-block;
             }
             
-            /* İade notunu yazıda göster */
             body:not(.print-special) .return-note-print {
-                display: block !important;
-                font-size: 11px; font-style: italic; color: #D32F2F; margin-top: 5px;
+                display: block !important; font-size: 11px; font-style: italic; color: #D32F2F; margin-top: 5px;
             }
 
-            /* --- RAPOR SAYFASI CSS (DOKUNULMADI) --- */
-            #failureReportPage {
-                width: 100%;
-                font-family: 'Arial', sans-serif; /* Okunaklı font */
-            }
-            .report-main-header {
-                text-align: center;
-                border-bottom: 2px solid #000;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-            }
+            /* --- RAPOR SAYFASI CSS --- */
+            #failureReportPage { width: 100%; font-family: 'Arial', sans-serif; }
+            .report-main-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
             .report-main-header h2 { margin: 0; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
             .report-main-header h1 { margin: 5px 0; font-size: 24px; font-weight: 900; text-transform: uppercase; }
             .report-main-header p { margin: 5px 0 0 0; font-size: 14px; font-weight: bold; }
@@ -181,21 +177,17 @@
             .date-header-bar {
                 background: #000 !important; color: #fff !important;
                 padding: 6px 10px; font-size: 14px; font-weight: bold;
-                border-radius: 4px; margin-bottom: 10px;
-                border: 1px solid #000;
+                border-radius: 4px; margin-bottom: 10px; border: 1px solid #000;
                 -webkit-print-color-adjust: exact; print-color-adjust: exact;
                 display: flex; justify-content: space-between;
             }
             .date-grid-container {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr 1fr !important; /* ZORUNLU 3 SÜTUN */
-                gap: 10px !important; width: 100%;
+                display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 10px !important; width: 100%;
             }
             .fail-card {
                 border: 2px solid #000 !important; border-radius: 10px !important;
                 padding: 8px !important; background: #fff;
-                height: 90px !important; /* Yükseklik Sabit */
-                position: relative; box-sizing: border-box;
+                height: 90px !important; position: relative; box-sizing: border-box;
                 font-family: 'Arial', sans-serif;
             }
             .fc-date-lbl { position: absolute; top: 8px; left: 8px; font-size: 7px; font-weight: bold; color: #555; }
@@ -212,6 +204,26 @@
     </style>
 </head>
 <body>
+
+<div id="selectionPage">
+    <div class="selection-title">
+        ÖZLİDER & ŞÖLEN<br>
+        <span style="font-size: 1rem; color: #CFA670; font-family: 'Poppins';">Giriş Modu Seçiniz</span>
+    </div>
+    <div class="card-container">
+        <div class="role-card admin" onclick="selectRole('admin')">
+            <i class="fas fa-user-shield"></i>
+            <h3>YÖNETİCİ</h3>
+            <p style="font-size:0.8rem; color:#666; margin-top:5px;">Tam Yetki</p>
+        </div>
+        
+        <div class="role-card driver" onclick="selectRole('driver')">
+            <i class="fas fa-truck"></i>
+            <h3>ŞOFÖR</h3>
+            <p style="font-size:0.8rem; color:#666; margin-top:5px;">Durum & İade</p>
+        </div>
+    </div>
+</div>
 
 <div id="searchModal">
     <div class="search-box">
@@ -233,9 +245,7 @@
         <h1>BEKLEYEN İŞLER</h1>
         <p id="failReportDate">RAPOR: ...</p>
     </div>
-    
     <div id="failContentArea"></div>
-
     <div style="margin-top:20px; border-top:2px solid black; padding-top:10px; text-align:right;">
         <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal" style="font-size: 18px;">0</span> ADET</strong>
     </div>
@@ -258,7 +268,7 @@
     <p style="margin-top:15px; font-weight:600;">Sistem Hazırlanıyor...</p>
 </div>
 
-<div class="container">
+<div class="container" id="mainContainer">
     <div class="header-card">
         <div class="logo-frame"><img src="solen.png" alt="Şölen" class="logo-img" onerror="this.style.opacity='0.2'"></div>
         <div class="header-title">ÖZLİDER<small>Lojistik Yönetimi</small></div>
@@ -285,10 +295,10 @@
     </div>
 
     <div class="admin-panel">
-        <button class="btn-action" onclick="addNewRow()"><i class="fas fa-plus"></i> Yeni Kayıt</button>
-        <button class="btn-action btn-search" onclick="openSearchModal()"><i class="fas fa-search"></i> Kayıt Ara</button>
-        <button class="btn-action btn-print" onclick="window.print()"><i class="fas fa-print"></i> Günlük Yazdır</button>
-        <button class="btn-action btn-fail-report" onclick="runPendingReport()"><i class="fas fa-clock"></i> Bekleyenleri Raporla</button>
+        <button id="btnNew" class="btn-action" onclick="addNewRow()"><i class="fas fa-plus"></i> Yeni Kayıt</button>
+        <button id="btnSearch" class="btn-action btn-search" onclick="openSearchModal()"><i class="fas fa-search"></i> Kayıt Ara</button>
+        <button id="btnPrint" class="btn-action btn-print" onclick="window.print()"><i class="fas fa-print"></i> Günlük Yazdır</button>
+        <button id="btnReport" class="btn-action btn-fail-report" onclick="runPendingReport()"><i class="fas fa-clock"></i> Bekleyenleri Raporla</button>
     </div>
 
     <div class="shipment-list" id="cardContainer"></div>
@@ -329,14 +339,34 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const isAdmin = new URLSearchParams(window.location.search).get('mod') === "yonetici_gizli_anahtar";
+    let isAdmin = false; 
     let currentData = { meta: {}, items: [] };
     let currentDateKey = "";
     let unsubscribe = null;
 
-    window.onload = () => {
-        if (isAdmin) document.querySelector('.admin-panel').style.display = 'flex';
-        
+    // --- YENİ GİRİŞ FONKSİYONU (KART SEÇİMİ) ---
+    window.selectRole = (role) => {
+        if (role === 'admin') {
+            isAdmin = true;
+        } else {
+            isAdmin = false;
+        }
+        initSystem();
+    };
+
+    function initSystem() {
+        document.getElementById('selectionPage').style.display = 'none'; // Giriş ekranını gizle
+        document.getElementById('mainContainer').style.display = 'block'; // Ana ekranı aç
+
+        // Buton Gizleme Mantığı (Yetkiye Göre)
+        if (!isAdmin) {
+            document.getElementById('btnNew').style.display = 'none'; // Şoför yeni ekleyemez
+            document.getElementById('btnReport').style.display = 'none'; // Şoför rapor alamaz
+        } else {
+            document.getElementById('btnNew').style.display = 'flex';
+            document.getElementById('btnReport').style.display = 'flex';
+        }
+
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -345,7 +375,7 @@
         document.getElementById('queryDate').value = tomorrow.toISOString().split('T')[0];
         
         loadData();
-    };
+    }
 
     window.loadData = loadData; window.saveMeta = saveMeta; window.addNewRow = addNewRow; window.deleteItem = deleteItem;
     window.runPendingReport = runPendingReport;
@@ -422,7 +452,7 @@
         }
     }
 
-    // --- BEKLEYEN RAPORU: TARİH GRUPLU VE 3'LÜ GRID ---
+    // --- BEKLEYEN RAPORU ---
     async function runPendingReport() {
         if(!isAdmin) return;
         const loader = document.getElementById('loader');
@@ -461,10 +491,8 @@
                 return;
             }
 
-            // Tarihe göre sırala
             allPendings.sort((a, b) => new Date(a.date.split('.').reverse().join('-')) - new Date(b.date.split('.').reverse().join('-')));
 
-            // Grupla
             const groupedByDate = {};
             allPendings.forEach(item => {
                 if(!groupedByDate[item.date]) {
@@ -476,14 +504,11 @@
             const contentArea = document.getElementById('failContentArea');
             contentArea.innerHTML = '';
             
-            // HER TARİH İÇİN DÖNGÜ
             Object.keys(groupedByDate).forEach(date => {
                 const items = groupedByDate[date];
-                
                 const groupSection = document.createElement('div');
                 groupSection.className = 'date-group-section';
 
-                // SİYAH BAŞLIK (TARİH)
                 const headerHTML = `
                     <div class="date-header-bar">
                         <span><i class="far fa-calendar-alt"></i> ${date}</span>
@@ -491,27 +516,20 @@
                     </div>
                 `;
                 
-                // GRID BAŞLANGICI
                 let gridHTML = `<div class="date-grid-container">`;
-                
                 items.forEach(f => {
                     gridHTML += `
                         <div class="fail-card">
                             <span class="fc-date-lbl">TARİH</span>
                             <span class="fc-date-val">${f.date}</span>
-                            
                             <div class="fc-name">${f.name}</div>
-                            
                             <span class="fc-inv-lbl">FATURA</span>
                             <span class="fc-inv-val">${f.invoice}</span>
-                            
                             <div class="fc-status">${f.status}</div>
                         </div>
                     `;
                 });
-                
                 gridHTML += `</div>`; 
-
                 groupSection.innerHTML = headerHTML + gridHTML;
                 contentArea.appendChild(groupSection);
             });
@@ -579,7 +597,7 @@
             card.innerHTML = `
                 <div class="card-header">
                     <span class="card-seq">#${index + 1}</span>
-                    ${isAdmin ? `<button onclick="deleteItem(${index})" style="border:none; bg:none; color:red; cursor:pointer;"><i class="fas fa-trash-alt"></i></button>` : ''}
+                    ${isAdmin ? `<button id="delBtn${index}" onclick="deleteItem(${index})" style="border:none; bg:none; color:red; cursor:pointer;"><i class="fas fa-trash-alt"></i></button>` : ''}
                 </div>
                 <div class="card-body">
                     <input type="text" class="premium-input" placeholder="Müşteri Ünvanı" value="${item.name || ''}" ${inputState} onchange="updateItem(${index}, 'name', this.value)">
@@ -615,6 +633,7 @@
 
     async function saveMeta() {
         if (!currentDateKey) return;
+        if (!isAdmin) return; // Şoför değiştiremez
         currentData.meta = { driver: document.getElementById('driverInput').value, plate: document.getElementById('plateInput').value };
         updatePrintInfo();
         const docRef = doc(db, "sevkiyatlar", currentDateKey);
@@ -660,6 +679,7 @@
     }
 
     window.cycleStatus = (index) => {
+        // Şoför de yapabilir
         const statusMap = { 'pending': 'delivered', 'delivered': 'failed', 'failed': 'pending' };
         currentData.items[index].status = statusMap[currentData.items[index].status || 'pending'];
         if(currentData.items[index].status !== 'failed') currentData.items[index].failReason = '';
@@ -667,6 +687,7 @@
     }
 
     window.toggleReturn = (index) => {
+        // Şoför de yapabilir
         currentData.items[index].hasReturn = !currentData.items[index].hasReturn;
         if(!currentData.items[index].hasReturn) currentData.items[index].returnNote = '';
         pushToCloud();
