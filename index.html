@@ -67,50 +67,59 @@
 
         /* --- YAZDIRMA (PRINT) --- */
         @media print {
-            body { background: white; padding: 0; margin: 0; }
+            body { background: white; padding: 10px; margin: 0; }
             
             /* ÖZEL RAPOR YAZDIRILIYORSA */
             body.print-special * { display: none !important; } 
             body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
             
-            /* DASHBOARD STİLİ (SENİN İSTEDİĞİN KUTU KUTU YAPI) */
+            /* --- YENİ DASHBOARD STİLİ (3'LÜ, BÜYÜK, OKUNAKLI) --- */
             .fail-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr; /* Yan yana 3 kutu */
-                gap: 15px;
-                margin-top: 20px;
+                /* Yan yana 3 tane sığdır */
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 25px; /* Kartlar arası boşluk arttı */
+                margin-top: 30px;
                 width: 100%;
             }
             
             .fail-card {
-                border: 2px solid #000; /* Kalın siyah çerçeve */
-                border-radius: 10px; /* Köşeler yuvarlak */
-                padding: 10px;
-                break-inside: avoid; /* Sayfa sonunda ortadan bölünmesin */
+                border: 3px solid #000; /* Çerçeve kalınlaştı */
+                border-radius: 15px;
+                padding: 20px; /* İç boşluk arttı */
+                break-inside: avoid;
                 font-family: 'Poppins', sans-serif;
-                font-size: 11px;
+                /* Ana yazı boyutu büyüdü (eskisi 11px idi) */
+                font-size: 14px; 
                 box-sizing: border-box;
                 background: #fff;
             }
 
             .fail-card strong {
                 display: block;
-                color: #555;
-                font-size: 9px;
+                color: #000; /* Tam siyah */
+                /* Başlık boyutu büyüdü (eskisi 9px idi) */
+                font-size: 12px; 
+                font-weight: 800;
                 text-transform: uppercase;
-                margin-bottom: 2px;
+                margin-bottom: 5px;
+                letter-spacing: 0.5px;
             }
 
             .fail-card div {
-                margin-bottom: 6px;
+                margin-bottom: 15px; /* Satır araları açıldı */
                 color: #000;
-                font-weight: 600;
-                border-bottom: 1px dashed #ccc;
-                padding-bottom: 2px;
+                font-weight: 700;
+                /* Alt çizgi daha belirgin */
+                border-bottom: 2px dotted #555; 
+                padding-bottom: 5px;
+                /* Değer boyutu büyüdü */
+                font-size: 16px; 
             }
-            .fail-card div:last-child { border: none; margin: 0; }
+            .fail-card div:last-child { border: none; margin-bottom: 0; }
+            /* -------------------------------------------------- */
 
-            /* NORMAL GÜNLÜK YAZDIRILIYORSA */
+            /* NORMAL GÜNLÜK YAZDIRILIYORSA (Buralara dokunulmadı) */
             body:not(.print-special) .header-card, 
             body:not(.print-special) .admin-panel, 
             body:not(.print-special) .loader, 
@@ -138,20 +147,19 @@
 <body>
 
 <div id="failureReportPage">
-    <div style="text-align:center; margin-bottom:20px; border-bottom: 2px solid #000; padding-bottom: 10px;">
-        <h2 style="margin:0;">BEKLEYEN İŞLER (DASHBOARD)</h2>
-        <p style="margin:5px 0;">ÖZLİDER TÜKETİM & ŞÖLEN</p>
-        <small id="failReportDate">Rapor Tarihi: ...</small>
+    <div style="text-align:center; margin-bottom:30px; border-bottom: 3px solid #000; padding-bottom: 15px;">
+        <h2 style="margin:0; font-size: 24px; font-weight: 800;">BEKLEYEN İŞLER (DASHBOARD)</h2>
+        <p style="margin:10px 0; font-size: 16px;">ÖZLİDER TÜKETİM & ŞÖLEN</p>
+        <small id="failReportDate" style="font-size: 14px; font-weight: bold;">Rapor Tarihi: ...</small>
     </div>
     
-    <div id="failCardContainer" class="fail-grid">
-        </div>
+    <div id="failCardContainer" class="fail-grid"></div>
 
-    <div style="margin-top:30px; border-top:2px solid black; padding-top:10px; font-size:13px;">
-        <h4 style="margin:0 0 10px 0;">TARİH BAZLI ÖZET:</h4>
-        <div id="failSummaryList"></div>
-        <div style="text-align:right; margin-top:20px; font-size:14px;">
-            <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal">0</span> ADET</strong>
+    <div style="margin-top:40px; border-top:3px solid black; padding-top:20px; font-size:14px;">
+        <h4 style="margin:0 0 15px 0; font-size: 18px;">TARİH BAZLI ÖZET:</h4>
+        <div id="failSummaryList" style="font-size: 15px;"></div>
+        <div style="text-align:right; margin-top:30px; font-size:18px;">
+            <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal" style="font-size: 22px;">0</span> ADET</strong>
         </div>
     </div>
 </div>
@@ -315,7 +323,9 @@
             container.innerHTML = '';
             
             allPendings.forEach(f => {
-                // Burada çizdiğin kutuyu yapıyoruz
+                // Durum rengi ayarı
+                let statusColor = f.status === 'EDİLMEDİ' ? 'red' : '#FBC02D'; // Kırmızı veya Sarı
+
                 container.innerHTML += `
                     <div class="fail-card">
                         <strong>Tarih:</strong>
@@ -328,7 +338,7 @@
                         <div>${f.invoice}</div>
                         
                         <strong>Durum:</strong>
-                        <div style="color:red;">${f.status}</div>
+                        <div style="color:${statusColor}; font-weight:900;">${f.status}</div>
                     </div>
                 `;
             });
@@ -336,11 +346,11 @@
             const summaryDiv = document.getElementById('failSummaryList');
             summaryDiv.innerHTML = '';
             Object.keys(statsByDate).sort().forEach(d => {
-                summaryDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>• ${d} Tarihine Ait:</span> <strong>${statsByDate[d]} Adet Bekleyen</strong></div>`;
+                summaryDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px dotted #ccc; padding-bottom:4px;"><span>• ${d}:</span> <strong>${statsByDate[d]} Adet</strong></div>`;
             });
 
             document.getElementById('failGrandTotal').innerText = allPendings.length;
-            document.getElementById('failReportDate').innerText = 'Rapor: ' + new Date().toLocaleDateString('tr-TR');
+            document.getElementById('failReportDate').innerText = 'Rapor Tarihi: ' + new Date().toLocaleDateString('tr-TR');
 
             loader.style.display = 'none';
             document.body.classList.add('print-special');
