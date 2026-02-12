@@ -18,7 +18,7 @@
             --border-gold: 1px solid rgba(207, 166, 112, 0.3);
         }
 
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); background-image: radial-gradient(circle at top right, rgba(207, 166, 112, 0.15), transparent); margin: 0; padding: 15px; min-height: 100vh; color: var(--text-chocolate); -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); margin: 0; padding: 15px; min-height: 100vh; color: var(--text-chocolate); }
         .container { max-width: 900px; margin: 0 auto; padding-bottom: 80px; }
 
         .header-card { background: var(--bg-card); border-radius: var(--radius-xl); padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-soft); margin-bottom: 25px; border-bottom: 3px solid var(--text-gold); }
@@ -30,26 +30,22 @@
         .control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: rgba(255,255,255,0.6); padding: 20px; border-radius: var(--radius-xl); margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.5); }
         .input-group label { display: block; font-size: 0.85rem; color: var(--text-gold); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
         .premium-input { width: 100%; background: var(--bg-card); border: var(--border-gold); padding: 12px 15px; border-radius: 12px; font-family: 'Poppins', sans-serif; color: var(--text-chocolate); font-weight: 600; font-size: 0.95rem; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.3s; box-sizing: border-box; }
-        .premium-input:focus { border-color: var(--brand-red); box-shadow: 0 4px 15px rgba(211, 47, 47, 0.1); }
+        .premium-input:focus { border-color: var(--brand-red); }
         .premium-input:disabled { background: transparent; color: #888; border-color: transparent; box-shadow: none; cursor: not-allowed; }
 
-        /* YÖNETİCİ PANELİ (BUTONLAR) */
         .admin-panel { display: none; justify-content: flex-end; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .btn-action { background: linear-gradient(135deg, var(--brand-red), #B71C1C); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; box-shadow: 0 8px 20px rgba(211, 47, 47, 0.25); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .btn-print { background: linear-gradient(135deg, var(--text-chocolate), #2C1E1D); box-shadow: 0 8px 20px rgba(74, 44, 42, 0.25); }
         
-        /* --- YENİ EKLENEN BUTON STİLİ --- */
-        .btn-fail-report { 
-            background: linear-gradient(135deg, #FF9800, #EF6C00); 
-            box-shadow: 0 8px 20px rgba(239, 108, 0, 0.25); 
-        }
+        /* RAPOR BUTONU (Turuncu) */
+        .btn-fail-report { background: linear-gradient(135deg, #FF9800, #EF6C00); box-shadow: 0 8px 20px rgba(239, 108, 0, 0.25); }
 
         .shipment-list { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
         .card { background: var(--bg-card); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; border-left: 6px solid var(--text-gold); }
         .card.delivered { border-left-color: var(--status-success); }
         .card.failed { border-left-color: var(--brand-red); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed rgba(0,0,0,0.1); }
-        .card-seq { background: var(--text-main); color: var(--text-chocolate); font-weight: 800; opacity: 0.5; font-size: 1.2rem; }
+        .card-body { display: block; } 
 
         .btn-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-opt { border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; color: #6D4C41; background: #F2E8D5; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -60,7 +56,6 @@
         .report-section { background: white; border-radius: var(--radius-xl); padding: 25px; box-shadow: var(--shadow-soft); border-top: 4px solid var(--text-gold); }
         .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .report-card { padding: 15px; background: var(--bg-input); border-radius: 12px; }
-        .report-title { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--text-chocolate); margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px; }
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
         .stat-val { font-weight: 800; }
         .val-success { color: var(--status-success); } .val-danger { color: var(--status-danger); }
@@ -69,28 +64,21 @@
 
         .loader { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(253, 243, 231, 0.95); z-index: 1000; display: flex; justify-content: center; align-items: center; flex-direction: column; color: var(--text-chocolate); }
 
-        /* --- PRINT (YAZDIRMA) AYARLARI --- */
-        
-        /* 1. GİZLİ RAPOR SAYFASI (Ekranda görünmez) */
-        #failureReportPage { display: none; padding: 20px; font-family: 'Poppins', sans-serif; color: black; }
-        .fail-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-        .fail-table th { border-bottom: 2px solid black; text-align: left; padding: 5px; }
-        .fail-table td { border-bottom: 1px solid #ccc; padding: 6px 5px; vertical-align: top; }
-        .summary-box { margin-top: 30px; border-top: 2px solid black; padding-top: 10px; font-size: 13px; }
+        /* --- GİZLİ RAPOR ALANI --- */
+        #failureReportPage { display: none; }
 
-        /* 2. YAZDIRMA MODU */
+        /* --- YAZDIRMA (PRINT) --- */
         @media print {
             body { background: white; padding: 0; }
             
-            /* A) Eğer Teslim Edilmeyenler Raporu Yazdırılıyorsa */
-            body.print-special * { display: none !important; } /* Her şeyi gizle */
-            body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; } /* Sadece raporu aç */
-            body.print-special .fail-table { display: table !important; }
-            body.print-special .fail-table tbody { display: table-row-group !important; }
-            body.print-special .fail-table tr { display: table-row !important; }
-            body.print-special .fail-table td { display: table-cell !important; }
+            /* ÖZEL RAPOR YAZDIRILIYORSA */
+            body.print-special * { display: none !important; } 
+            body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
+            body.print-special .fail-table { display: table !important; width: 100%; border-collapse: collapse; font-size: 12px; }
+            body.print-special .fail-table th { border-bottom: 2px solid black; text-align: left; padding: 5px; }
+            body.print-special .fail-table td { border-bottom: 1px solid #ccc; padding: 8px 5px; }
 
-            /* B) Normal Günlük Liste Yazdırılıyorsa */
+            /* NORMAL GÜNLÜK YAZDIRILIYORSA */
             body:not(.print-special) .header-card, 
             body:not(.print-special) .admin-panel, 
             body:not(.print-special) .loader, 
@@ -100,6 +88,7 @@
 
             body:not(.print-special) .print-header { display: block !important; padding: 20px; border-bottom: 2px solid #000; margin-bottom: 20px; }
             body:not(.print-special) .print-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+            
             body:not(.print-special) .shipment-list { display: block; }
             body:not(.print-special) .card { break-inside: avoid; border: 1px solid #ccc; margin-bottom: -1px; box-shadow: none; border-radius: 0; border-left: 1px solid #ccc; padding: 10px; display: flex; align-items: center; }
             body:not(.print-special) .card-header { display: none; }
@@ -118,29 +107,26 @@
 
 <div id="failureReportPage">
     <div style="text-align:center; margin-bottom:20px;">
-        <h2 style="margin:0;">TESLİM EDİLMEYEN FATURALAR RAPORU</h2>
+        <h2 style="margin:0;">BEKLEYEN (TESLİM EDİLMEYEN) RAPORU</h2>
         <p style="margin:5px 0;">ÖZLİDER TÜKETİM & ŞÖLEN</p>
-        <small id="failReportDate">Rapor Oluşturma: ...</small>
+        <small id="failReportDate">Rapor Tarihi: ...</small>
     </div>
-
     <table class="fail-table">
         <thead>
             <tr>
                 <th style="width:120px;">TARİH</th>
                 <th>MÜŞTERİ</th>
                 <th>FATURA NO</th>
-                <th>SEBEP</th>
+                <th>DURUM</th>
             </tr>
         </thead>
-        <tbody id="failTableBody">
-            </tbody>
+        <tbody id="failTableBody"></tbody>
     </table>
-
-    <div class="summary-box">
+    <div style="margin-top:30px; border-top:2px solid black; padding-top:10px; font-size:13px;">
         <h4 style="margin:0 0 10px 0;">TARİH BAZLI ÖZET:</h4>
         <div id="failSummaryList"></div>
         <div style="text-align:right; margin-top:20px; font-size:14px;">
-            <strong>TOPLAM TESLİM EDİLMEYEN: <span id="failGrandTotal">0</span> ADET</strong>
+            <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal">0</span> ADET</strong>
         </div>
     </div>
 </div>
@@ -190,15 +176,13 @@
 
     <div class="admin-panel">
         <button class="btn-action" onclick="addNewRow()"><i class="fas fa-plus"></i> Yeni Kayıt</button>
-        <button class="btn-action btn-print" onclick="window.print()"><i class="fas fa-print"></i> Yazdır</button>
-        <button class="btn-action btn-fail-report" onclick="runFailureReport()">
-            <i class="fas fa-exclamation-triangle"></i> Teslim Edilmeyenler
-        </button>
+        <button class="btn-action btn-print" onclick="window.print()"><i class="fas fa-print"></i> Günlük Yazdır</button>
+        <button class="btn-action btn-fail-report" onclick="runPendingReport()"><i class="fas fa-clock"></i> Bekleyenleri Raporla</button>
     </div>
 
     <div class="shipment-list" id="cardContainer"></div>
 
-    <div class="report-section">
+    <div class="report-section" id="reportSection">
         <div class="report-grid">
             <div class="report-card">
                 <div class="report-title">1. DAĞITIM RAPORU</div>
@@ -219,7 +203,6 @@
 </div>
 
 <script type="module">
-    // DİKKAT: 'collection' ve 'getDocs' eklendi!
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, doc, onSnapshot, setDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -254,109 +237,84 @@
     };
 
     window.loadData = loadData; window.saveMeta = saveMeta; window.addNewRow = addNewRow; window.deleteItem = deleteItem;
-    window.runFailureReport = runFailureReport; // Yeni fonksiyon
+    window.runPendingReport = runPendingReport;
 
-    // --- YENİ RAPORLAMA FONKSİYONU ---
-    async function runFailureReport() {
+    // --- YENİ RAPORLAMA (SADECE BEKLEYENLER) ---
+    async function runPendingReport() {
         if(!isAdmin) return;
         const loader = document.getElementById('loader');
         loader.style.display = 'flex';
-        loader.innerHTML = '<i class="fas fa-search fa-spin fa-3x"></i><p>Tüm Arşiv Taranıyor...</p>';
+        loader.innerHTML = '<i class="fas fa-search fa-spin fa-3x"></i><p>Bekleyen İşler Taranıyor...</p>';
 
         try {
-            // Tüm 'sevkiyatlar' koleksiyonunu çek
             const querySnapshot = await getDocs(collection(db, "sevkiyatlar"));
-            let allFailures = [];
+            let allPendings = [];
             let statsByDate = {};
 
             querySnapshot.forEach((doc) => {
-                const dateKey = doc.id;
                 const data = doc.data();
-                
                 if (data.items && Array.isArray(data.items)) {
-                    // Sadece 'failed' olanları filtrele
-                    const failures = data.items.filter(item => item.status === 'failed');
+                    // BEKLEYENLERİ FİLTRELE (Status: Pending)
+                    const pendings = data.items.filter(item => item.status === 'pending');
                     
-                    if (failures.length > 0) {
-                        const fmtDate = dateKey.split('-').reverse().join('.');
-                        
-                        // İstatistik tut
+                    if (pendings.length > 0) {
+                        const fmtDate = doc.id.split('-').reverse().join('.');
                         if (!statsByDate[fmtDate]) statsByDate[fmtDate] = 0;
-                        statsByDate[fmtDate] += failures.length;
+                        statsByDate[fmtDate] += pendings.length;
 
-                        // Listeye ekle
-                        failures.forEach(f => {
-                            allFailures.push({
-                                date: fmtDate,
-                                name: f.name || 'İsimsiz',
-                                invoice: f.invoice || '-',
-                                reason: f.failReason || 'Belirtilmedi'
-                            });
+                        pendings.forEach(f => {
+                            allPendings.push({ date: fmtDate, name: f.name || 'İsimsiz', invoice: f.invoice || '-', status: 'Bekliyor' });
                         });
                     }
                 }
             });
 
-            // Tarihe göre sırala (Eskiden yeniye)
-            allFailures.sort((a, b) => {
-                const da = new Date(a.date.split('.').reverse().join('-'));
-                const db = new Date(b.date.split('.').reverse().join('-'));
-                return da - db;
-            });
+            if (allPendings.length === 0) {
+                alert("Harika! Sistemde bekleyen (işlem görmemiş) hiç sipariş yok. Hepsi tamamlanmış.");
+                loader.style.display = 'none';
+                return;
+            }
 
-            // Tabloyu Doldur
+            allPendings.sort((a, b) => new Date(a.date.split('.').reverse().join('-')) - new Date(b.date.split('.').reverse().join('-')));
             const tbody = document.getElementById('failTableBody');
             tbody.innerHTML = '';
             
-            allFailures.forEach(f => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${f.date}</td><td>${f.name}</td><td>${f.invoice}</td><td>${f.reason}</td>`;
-                tbody.appendChild(tr);
+            allPendings.forEach(f => {
+                tbody.innerHTML += `<tr><td>${f.date}</td><td>${f.name}</td><td>${f.invoice}</td><td>${f.status}</td></tr>`;
             });
 
-            // Özeti Doldur
             const summaryDiv = document.getElementById('failSummaryList');
             summaryDiv.innerHTML = '';
-            // Tarihleri sıralı yazdır
             Object.keys(statsByDate).sort().forEach(d => {
-                summaryDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d}:</span> <strong>${statsByDate[d]} Adet</strong></div>`;
+                summaryDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>• ${d} Tarihine Ait:</span> <strong>${statsByDate[d]} Adet Bekleyen</strong></div>`;
             });
 
-            document.getElementById('failGrandTotal').innerText = allFailures.length;
+            document.getElementById('failGrandTotal').innerText = allPendings.length;
             document.getElementById('failReportDate').innerText = 'Rapor: ' + new Date().toLocaleDateString('tr-TR');
 
             loader.style.display = 'none';
-
-            // Yazdırma Modunu Aktif Et
             document.body.classList.add('print-special');
             window.print();
-
-            // Yazdırmadan sonra normale dön
-            setTimeout(() => {
-                document.body.classList.remove('print-special');
-                loader.innerHTML = '<i class="fas fa-cookie-bite fa-spin fa-3x"></i><p>Hazır...</p>';
-            }, 1500);
+            setTimeout(() => { document.body.classList.remove('print-special'); }, 1000);
 
         } catch (e) {
             console.error(e);
-            alert("Hata oluştu: " + e.message);
+            alert("Hata: " + e.message);
             loader.style.display = 'none';
         }
     }
 
-    // --- MEVCUT FONKSİYONLAR ---
+    // --- STANDART FONKSİYONLAR ---
     function loadData() {
         const dateInput = document.getElementById('queryDate').value;
         if (!dateInput) return;
         currentDateKey = dateInput;
-
         document.getElementById('loader').style.display = 'flex';
         const container = document.getElementById('cardContainer');
         container.innerHTML = '';
         if (unsubscribe) unsubscribe();
 
         const docRef = doc(db, "sevkiyatlar", currentDateKey);
-
         unsubscribe = onSnapshot(docRef, (docSnap) => {
             document.getElementById('loader').style.display = 'none';
             if (docSnap.exists()) {
@@ -379,7 +337,7 @@
         const container = document.getElementById('cardContainer');
         container.innerHTML = '';
         if (!currentData.items || currentData.items.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-gold);">Planlanmış kayıt yok.</div>`;
+            container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-gold);">Kayıt yok.</div>`;
             return;
         }
         currentData.items.forEach((item, index) => {
