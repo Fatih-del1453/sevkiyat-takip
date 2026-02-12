@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Özlider & Şölen - Lojistik Yönetimi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -67,57 +67,66 @@
 
         /* --- YAZDIRMA (PRINT) --- */
         @media print {
-            body { background: white; padding: 10px; margin: 0; }
+            body { background: white; padding: 0; margin: 0; }
             
             /* ÖZEL RAPOR YAZDIRILIYORSA */
             body.print-special * { display: none !important; } 
             body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
             
-            /* --- YENİ DASHBOARD STİLİ (3'LÜ, BÜYÜK, OKUNAKLI) --- */
+            /* --- YENİ DASHBOARD STİLİ (3'LÜ - KESİN ÇÖZÜM) --- */
             .fail-grid {
-                display: grid;
-                /* Yan yana 3 tane sığdır */
-                grid-template-columns: repeat(3, 1fr); 
-                gap: 25px; /* Kartlar arası boşluk arttı */
+                display: grid !important;
+                /* Yan yana 3 tane zorla */
+                grid-template-columns: 1fr 1fr 1fr !important; 
+                gap: 15px !important; /* Araları açık olsun */
                 margin-top: 30px;
                 width: 100%;
             }
             
             .fail-card {
-                border: 3px solid #000; /* Çerçeve kalınlaştı */
-                border-radius: 15px;
-                padding: 20px; /* İç boşluk arttı */
-                break-inside: avoid;
-                font-family: 'Poppins', sans-serif;
-                /* Ana yazı boyutu büyüdü (eskisi 11px idi) */
-                font-size: 14px; 
-                box-sizing: border-box;
+                /* Kutu görünümü */
+                border: 2px solid #000; 
+                border-radius: 12px;
+                padding: 15px; 
+                break-inside: avoid; /* Bölünmeyi engelle */
                 background: #fff;
+                /* Yükseklik hizalı olsun */
+                height: 100%; 
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
             }
 
-            .fail-card strong {
+            /* Etiketler (Başlıklar) - Gri ve Küçük */
+            .label-text {
                 display: block;
-                color: #000; /* Tam siyah */
-                /* Başlık boyutu büyüdü (eskisi 9px idi) */
-                font-size: 12px; 
-                font-weight: 800;
+                font-size: 10px;
+                color: #666;
                 text-transform: uppercase;
-                margin-bottom: 5px;
-                letter-spacing: 0.5px;
+                font-weight: 700;
+                margin-bottom: 2px;
             }
 
-            .fail-card div {
-                margin-bottom: 15px; /* Satır araları açıldı */
+            /* Değerler (İçerik) - Siyah ve BÜYÜK */
+            .value-text {
+                display: block;
+                font-size: 16px; /* Büyüttük */
+                font-weight: 800; /* Kalınlaştırdık */
                 color: #000;
-                font-weight: 700;
-                /* Alt çizgi daha belirgin */
-                border-bottom: 2px dotted #555; 
-                padding-bottom: 5px;
-                /* Değer boyutu büyüdü */
-                font-size: 16px; 
+                margin-bottom: 12px; /* Altına boşluk */
+                line-height: 1.2;
             }
-            .fail-card div:last-child { border: none; margin-bottom: 0; }
-            /* -------------------------------------------------- */
+            
+            /* Durum Yazısı (En Altta) */
+            .status-box {
+                background: #eee;
+                text-align: center;
+                padding: 5px;
+                border-radius: 6px;
+                font-weight: 900;
+                font-size: 14px;
+                margin-top: 5px;
+            }
 
             /* NORMAL GÜNLÜK YAZDIRILIYORSA (Buralara dokunulmadı) */
             body:not(.print-special) .header-card, 
@@ -148,7 +157,7 @@
 
 <div id="failureReportPage">
     <div style="text-align:center; margin-bottom:30px; border-bottom: 3px solid #000; padding-bottom: 15px;">
-        <h2 style="margin:0; font-size: 24px; font-weight: 800;">BEKLEYEN İŞLER (DASHBOARD)</h2>
+        <h2 style="margin:0; font-size: 24px; font-weight: 800;">BEKLEYEN İŞLER RAPORU</h2>
         <p style="margin:10px 0; font-size: 16px;">ÖZLİDER TÜKETİM & ŞÖLEN</p>
         <small id="failReportDate" style="font-size: 14px; font-weight: bold;">Rapor Tarihi: ...</small>
     </div>
@@ -159,7 +168,7 @@
         <h4 style="margin:0 0 15px 0; font-size: 18px;">TARİH BAZLI ÖZET:</h4>
         <div id="failSummaryList" style="font-size: 15px;"></div>
         <div style="text-align:right; margin-top:30px; font-size:18px;">
-            <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal" style="font-size: 22px;">0</span> ADET</strong>
+            <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal" style="font-size: 24px;">0</span> ADET</strong>
         </div>
     </div>
 </div>
@@ -296,7 +305,7 @@
                         statsByDate[fmtDate] += pendings.length;
 
                         pendings.forEach(f => {
-                            let durumText = 'Bekliyor';
+                            let durumText = 'BEKLİYOR';
                             if(f.status === 'failed') durumText = 'EDİLMEDİ';
                             
                             allPendings.push({ 
@@ -324,21 +333,25 @@
             
             allPendings.forEach(f => {
                 // Durum rengi ayarı
-                let statusColor = f.status === 'EDİLMEDİ' ? 'red' : '#FBC02D'; // Kırmızı veya Sarı
+                let statusColor = f.status === 'EDİLMEDİ' ? 'red' : '#FBC02D'; 
+                let statusBg = f.status === 'EDİLMEDİ' ? '#FFEBEE' : '#FFFDE7';
 
                 container.innerHTML += `
                     <div class="fail-card">
-                        <strong>Tarih:</strong>
-                        <div>${f.date}</div>
+                        <div>
+                            <span class="label-text">TARİH</span>
+                            <span class="value-text">${f.date}</span>
+                            
+                            <span class="label-text">MÜŞTERİ UNVANI</span>
+                            <span class="value-text">${f.name}</span>
+                            
+                            <span class="label-text">FATURA NO</span>
+                            <span class="value-text" style="margin-bottom:0;">${f.invoice}</span>
+                        </div>
                         
-                        <strong>Müşteri Unvanı:</strong>
-                        <div>${f.name}</div>
-                        
-                        <strong>Fatura No:</strong>
-                        <div>${f.invoice}</div>
-                        
-                        <strong>Durum:</strong>
-                        <div style="color:${statusColor}; font-weight:900;">${f.status}</div>
+                        <div class="status-box" style="color:${statusColor}; background:${statusBg};">
+                            ${f.status}
+                        </div>
                     </div>
                 `;
             });
