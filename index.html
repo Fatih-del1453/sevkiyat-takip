@@ -83,7 +83,7 @@
         /* --- GİZLİ RAPOR ALANI --- */
         #failureReportPage { display: none; }
 
-        /* --- YAZDIRMA (PRINT) --- */
+        /* --- YAZDIRMA (PRINT) - 3'LÜ YAPI İÇİN KRİTİK ALAN --- */
         @media print {
             body { background: white; padding: 0; margin: 0; }
             
@@ -91,59 +91,96 @@
             body.print-special * { display: none !important; } 
             body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
             
-            /* --- GÜNCELLENMİŞ DASHBOARD STİLİ (3'LÜ - KOMPAKT & KISA) --- */
+            /* GÖNDERDİĞİN RESİMDEKİ GİBİ IZGARA YAPISI */
             .fail-grid {
                 display: grid !important;
-                /* Yan yana 3 tane */
-                grid-template-columns: 1fr 1fr 1fr !important; 
-                gap: 8px !important; /* Boşlukları azalttık */
-                margin-top: 10px;
+                /* TAM OLARAK 3 EŞİT KOLON */
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 15px !important;
+                margin-top: 15px;
                 width: 100%;
+                box-sizing: border-box;
             }
             
             .fail-card {
-                /* Kutu görünümü - DAHA KÜÇÜK */
-                border: 1px solid #333; 
-                border-radius: 8px;
-                padding: 6px !important; /* Dolgu azaldı */
-                break-inside: avoid;
+                /* GÖRSELDEKİ GİBİ SİYAH ÇERÇEVELİ KUTU */
+                border: 2px solid #000 !important;
+                border-radius: 12px !important;
+                padding: 12px !important;
                 background: #fff;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
+                /* İçeriğin sığması için */
+                height: 100px !important; 
+                position: relative;
+                page-break-inside: avoid; /* Sayfa bölünmesini engelle */
+                box-sizing: border-box;
             }
 
-            /* Etiketler */
-            .label-text {
-                display: block;
-                font-size: 8px !important; /* Çok küçülttük */
-                color: #555;
-                text-transform: uppercase;
+            /* SOL ÜST KÖŞE: TARİH */
+            .card-date-label {
+                position: absolute;
+                top: 8px;
+                left: 10px;
+                font-size: 9px;
                 font-weight: 700;
-                margin-bottom: 0px;
-                line-height: 1;
+                color: #000;
+                text-transform: uppercase;
             }
-
-            /* Değerler */
-            .value-text {
-                display: block;
-                font-size: 11px !important; /* 16'dan 11'e düştü */
+            .card-date-val {
+                position: absolute;
+                top: 20px;
+                left: 10px;
+                font-size: 11px;
                 font-weight: 800;
                 color: #000;
-                margin-bottom: 4px !important; /* Boşluk azaldı */
+            }
+
+            /* ORTA: MÜŞTERİ ÜNVANI (BÜYÜK) */
+            .card-customer {
+                position: absolute;
+                top: 40px;
+                left: 10px;
+                right: 10px;
+                font-size: 13px;
+                font-weight: 900;
+                color: #000;
+                text-transform: uppercase;
                 line-height: 1.1;
-                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+                /* Çok uzun isimleri sığdırmak için */
+                white-space: nowrap; 
+                overflow: hidden; 
+                text-overflow: ellipsis; 
             }
-            
-            /* Durum Yazısı (En Altta) */
-            .status-box {
-                text-align: center;
-                padding: 2px !important;
-                border-radius: 4px;
+
+            /* SOL ALT: FATURA NO */
+            .card-invoice-label {
+                position: absolute;
+                bottom: 22px;
+                left: 10px;
+                font-size: 8px;
+                font-weight: 700;
+                color: #444;
+            }
+            .card-invoice-val {
+                position: absolute;
+                bottom: 8px;
+                left: 10px;
+                font-size: 12px;
                 font-weight: 800;
-                font-size: 10px !important;
-                margin-top: 2px;
+                color: #000;
             }
+
+            /* SAĞ ALT: DURUM (BEKLİYOR) */
+            .card-status {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                font-size: 10px;
+                font-weight: 900;
+                color: #888; /* Görseldeki gibi gri ton */
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
 
             /* NORMAL GÜNLÜK YAZDIRILIYORSA (Buralara dokunulmadı) */
             body:not(.print-special) .header-card, 
@@ -188,18 +225,18 @@
 </div>
 
 <div id="failureReportPage">
-    <div style="text-align:center; margin-bottom:15px; border-bottom: 2px solid #000; padding-bottom: 10px;">
-        <h2 style="margin:0; font-size: 18px; font-weight: 800;">BEKLEYEN İŞLER</h2>
-        <small id="failReportDate" style="font-size: 12px; font-weight: bold;">Rapor: ...</small>
+    <div style="text-align:center; margin-bottom:20px; border-bottom: 3px solid #000; padding-bottom: 10px;">
+        <h2 style="margin:0; font-size: 20px; font-weight: 900; letter-spacing:1px;">BEKLEYEN İŞLER RAPORU</h2>
+        <p style="margin:5px 0 0 0; font-size:14px;">ÖZLİDER TÜKETİM & ŞÖLEN</p>
+        <small id="failReportDate" style="font-size: 12px; font-weight: bold; display:block; margin-top:5px;">Rapor Tarihi: ...</small>
     </div>
     
     <div id="failCardContainer" class="fail-grid"></div>
 
-    <div style="margin-top:20px; border-top:2px solid black; padding-top:10px; font-size:12px;">
-        <h4 style="margin:0 0 10px 0; font-size: 14px;">TARİH ÖZETİ:</h4>
-        <div id="failSummaryList" style="font-size: 12px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;"></div>
-        <div style="text-align:right; margin-top:15px; font-size:14px;">
-            <strong>TOPLAM: <span id="failGrandTotal" style="font-size: 18px;">0</span> ADET</strong>
+    <div style="margin-top:30px; border-top:3px solid black; padding-top:15px;">
+        <div id="failSummaryList" style="font-size: 12px; display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-weight:bold;"></div>
+        <div style="text-align:right; margin-top:20px; font-size:16px;">
+            <strong>TOPLAM BEKLEYEN: <span id="failGrandTotal" style="font-size: 22px;">0</span> ADET</strong>
         </div>
     </div>
 </div>
@@ -313,7 +350,7 @@
     window.loadData = loadData; window.saveMeta = saveMeta; window.addNewRow = addNewRow; window.deleteItem = deleteItem;
     window.runPendingReport = runPendingReport;
     
-    // --- YENİ ARAMA FONKSİYONLARI ---
+    // --- ARAMA FONKSİYONLARI ---
     window.openSearchModal = () => { document.getElementById('searchModal').style.display = 'flex'; }
     window.closeSearchModal = () => { document.getElementById('searchModal').style.display = 'none'; document.getElementById('searchResults').innerHTML = ''; }
     
@@ -325,7 +362,6 @@
         resDiv.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Aranıyor...</div>';
         
         try {
-            // Veri güvenliği: Tüm koleksiyonu tarar (Maliyetli olabilir ama bu ölçekte sorun olmaz)
             const querySnapshot = await getDocs(collection(db, "sevkiyatlar"));
             let foundItems = [];
             
@@ -334,7 +370,6 @@
                 if (data.items && Array.isArray(data.items)) {
                     const dateStr = doc.id.split('-').reverse().join('.');
                     data.items.forEach(item => {
-                        // Unvan veya Fatura No içinde ara
                         if ((item.name && item.name.toLowerCase().includes(query)) || 
                             (item.invoice && item.invoice.toLowerCase().includes(query))) {
                             
@@ -362,7 +397,6 @@
             if(foundItems.length === 0) {
                 resDiv.innerHTML = '<div style="text-align:center; color:red; padding:20px;">Kayıt bulunamadı.</div>';
             } else {
-                // Tarihe göre sırala (Yeniden eskiye)
                 foundItems.sort((a,b) => new Date(b.date.split('.').reverse().join('-')) - new Date(a.date.split('.').reverse().join('-')));
                 
                 resDiv.innerHTML = '';
@@ -388,7 +422,7 @@
         }
     }
 
-    // --- BEKLEYENLERİ DASHBOARD KUTULARI OLARAK RAPORLA (REVİZE EDİLDİ) ---
+    // --- BEKLEYEN RAPORU: 3'LÜ KART YAPISI (GÖRSELE UYGUN) ---
     async function runPendingReport() {
         if(!isAdmin) return;
         const loader = document.getElementById('loader');
@@ -436,24 +470,19 @@
             const container = document.getElementById('failCardContainer');
             container.innerHTML = '';
             
+            // BURASI GÖRSELDEKİ HTML YAPISINI OLUŞTURUYOR
             allPendings.forEach(f => {
-                let statusColor = f.status === 'EDİLMEDİ' ? 'red' : '#FBC02D'; 
-                let statusBg = f.status === 'EDİLMEDİ' ? '#FFEBEE' : '#FFFDE7';
-
                 container.innerHTML += `
                     <div class="fail-card">
-                        <div style="width:100%;">
-                            <span class="label-text">TARİH</span>
-                            <span class="value-text" style="font-weight:normal;">${f.date}</span>
-                            
-                            <span class="label-text">MÜŞTERİ</span>
-                            <span class="value-text">${f.name}</span>
-                            
-                            <span class="label-text">FATURA</span>
-                            <span class="value-text" style="margin-bottom:0;">${f.invoice}</span>
-                        </div>
+                        <span class="card-date-label">TARİH</span>
+                        <span class="card-date-val">${f.date}</span>
                         
-                        <div class="status-box" style="color:${statusColor}; background:${statusBg};">
+                        <div class="card-customer">${f.name}</div>
+                        
+                        <span class="card-invoice-label">FATURA NO</span>
+                        <span class="card-invoice-val">${f.invoice}</span>
+                        
+                        <div class="card-status">
                             ${f.status}
                         </div>
                     </div>
@@ -463,11 +492,11 @@
             const summaryDiv = document.getElementById('failSummaryList');
             summaryDiv.innerHTML = '';
             Object.keys(statsByDate).sort().forEach(d => {
-                summaryDiv.innerHTML += `<div>• ${d}: <strong>${statsByDate[d]} Adet</strong></div>`;
+                summaryDiv.innerHTML += `<div>• ${d}: ${statsByDate[d]} Adet</div>`;
             });
 
             document.getElementById('failGrandTotal').innerText = allPendings.length;
-            document.getElementById('failReportDate').innerText = 'Rapor: ' + new Date().toLocaleDateString('tr-TR');
+            document.getElementById('failReportDate').innerText = 'Rapor Tarihi: ' + new Date().toLocaleDateString('tr-TR');
 
             loader.style.display = 'none';
             document.body.classList.add('print-special');
