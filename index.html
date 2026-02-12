@@ -83,6 +83,10 @@
         /* --- GİZLİ RAPOR ALANI (EKRANDA GÖRÜNMEZ) --- */
         #failureReportPage { display: none; }
 
+        /* --- PRINT HEADER (Normal ekranda gizle) --- */
+        .print-header { display: none; }
+        .return-note-print { display: none; }
+
         /* ========================================= */
         /* === KRİTİK ALAN: YAZDIRMA (PRINT) CSS === */
         /* ========================================= */
@@ -91,100 +95,119 @@
             body { background: white; padding: 0; margin: 0; }
             @page { size: A4 portrait; margin: 10mm; } /* A4 Dikey, Kenar boşluğu 10mm */
             
-            /* Sadece Rapor Görülsün */
+            /* Sadece Rapor Görülsün (Özel Rapor İçin) */
             body.print-special * { display: none !important; } 
             body.print-special #failureReportPage, body.print-special #failureReportPage * { display: block !important; }
 
+            /* --- GÜNLÜK YAZDIRMA AYARLARI (DÜZELTİLDİ) --- */
+            
+            /* 1. Gereksiz arayüz elemanlarını gizle */
+            body:not(.print-special) .header-card, 
+            body:not(.print-special) .admin-panel, 
+            body:not(.print-special) .loader, 
+            body:not(.print-special) .control-grid,
+            body:not(.print-special) .report-section,
+            body:not(.print-special) #searchModal,
+            body:not(.print-special) .card-header button, /* Silme butonu */
+            body:not(.print-special) .btn-group { /* İşlem butonları */
+                display: none !important; 
+            }
+
+            /* 2. Ana konteyneri ve listeyi görünür yap */
+            body:not(.print-special) .container { 
+                display: block !important; 
+                width: 100%; max-width: 100%; 
+                padding: 0; margin: 0; 
+                box-shadow: none; 
+            }
+            body:not(.print-special) .shipment-list { display: block !important; }
+
+            /* 3. Başlık Alanını (Şoför Bilgisi) Göster */
+            body:not(.print-special) .print-header {
+                display: block !important;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #4A2C2A;
+                padding-bottom: 10px;
+                font-family: 'Arial', sans-serif;
+            }
+            .print-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
+
+            /* 4. Kartları Basitleştir (Mürekkep Dostu) */
+            body:not(.print-special) .card {
+                border: 1px solid #ddd;
+                border-left-width: 5px; /* Durum rengi kalsın */
+                box-shadow: none;
+                margin-bottom: 10px;
+                padding: 10px;
+                page-break-inside: avoid;
+            }
+            
+            /* 5. Inputları Düz Metin Gibi Göster */
+            body:not(.print-special) .premium-input {
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0;
+                margin: 0;
+                font-weight: bold;
+                color: #000;
+                width: auto;
+                height: auto;
+                display: inline-block;
+            }
+            
+            /* İade notunu yazıda göster */
+            body:not(.print-special) .return-note-print {
+                display: block !important;
+                font-size: 11px; font-style: italic; color: #D32F2F; margin-top: 5px;
+            }
+
+            /* --- RAPOR SAYFASI CSS (DOKUNULMADI) --- */
             #failureReportPage {
                 width: 100%;
                 font-family: 'Arial', sans-serif; /* Okunaklı font */
             }
-
-            /* --- 1. RAPOR BAŞLIĞI --- */
             .report-main-header {
                 text-align: center;
                 border-bottom: 2px solid #000;
                 padding-bottom: 10px;
                 margin-bottom: 20px;
             }
-            .report-main-header h2 {
-                margin: 0; font-size: 18px; font-weight: 900;
-                text-transform: uppercase; letter-spacing: 1px;
-            }
-            .report-main-header h1 {
-                margin: 5px 0; font-size: 24px; font-weight: 900;
-                text-transform: uppercase;
-            }
-            .report-main-header p {
-                margin: 5px 0 0 0; font-size: 14px; font-weight: bold;
-            }
+            .report-main-header h2 { margin: 0; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+            .report-main-header h1 { margin: 5px 0; font-size: 24px; font-weight: 900; text-transform: uppercase; }
+            .report-main-header p { margin: 5px 0 0 0; font-size: 14px; font-weight: bold; }
 
-            /* --- 2. TARİH GRUBU --- */
-            .date-group-section {
-                margin-bottom: 20px;
-                page-break-inside: avoid; /* Grup içi bölünmeyi engelle */
-            }
-
-            /* SİYAH TARİH BAŞLIĞI */
+            .date-group-section { margin-bottom: 20px; page-break-inside: avoid; }
             .date-header-bar {
-                background: #000 !important;
-                color: #fff !important;
-                padding: 6px 10px;
-                font-size: 14px;
-                font-weight: bold;
-                border-radius: 4px;
-                margin-bottom: 10px;
+                background: #000 !important; color: #fff !important;
+                padding: 6px 10px; font-size: 14px; font-weight: bold;
+                border-radius: 4px; margin-bottom: 10px;
                 border: 1px solid #000;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
                 display: flex; justify-content: space-between;
             }
-
-            /* --- 3. IZGARA SİSTEMİ (GRID) --- */
             .date-grid-container {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr 1fr !important; /* ZORUNLU 3 SÜTUN */
-                gap: 10px !important;
-                width: 100%;
+                gap: 10px !important; width: 100%;
             }
-
-            /* --- 4. KART TASARIMI --- */
             .fail-card {
-                border: 2px solid #000 !important;
-                border-radius: 10px !important;
-                padding: 8px !important;
-                background: #fff;
+                border: 2px solid #000 !important; border-radius: 10px !important;
+                padding: 8px !important; background: #fff;
                 height: 90px !important; /* Yükseklik Sabit */
-                position: relative;
-                box-sizing: border-box;
+                position: relative; box-sizing: border-box;
                 font-family: 'Arial', sans-serif;
             }
-
-            /* Kart İçi Metinler */
             .fc-date-lbl { position: absolute; top: 8px; left: 8px; font-size: 7px; font-weight: bold; color: #555; }
             .fc-date-val { position: absolute; top: 16px; left: 8px; font-size: 10px; font-weight: 800; color: #000; }
-
             .fc-name {
-                position: absolute;
-                top: 35px; left: 8px; right: 8px;
+                position: absolute; top: 35px; left: 8px; right: 8px;
                 font-size: 11px; font-weight: 900; color: #000;
-                text-transform: uppercase;
-                overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+                text-transform: uppercase; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
             }
-
             .fc-inv-lbl { position: absolute; bottom: 18px; left: 8px; font-size: 7px; font-weight: bold; color: #555; }
             .fc-inv-val { position: absolute; bottom: 8px; left: 8px; font-size: 11px; font-weight: 800; color: #000; }
-
-            .fc-status {
-                position: absolute; bottom: 8px; right: 8px;
-                font-size: 9px; font-weight: 900; color: #666;
-            }
-
-            /* Diğer her şeyi gizle */
-            body:not(.print-special) .header-card, 
-            body:not(.print-special) .admin-panel, 
-            body:not(.print-special) .loader, 
-            body:not(.print-special) .container { display: none !important; }
+            .fc-status { position: absolute; bottom: 8px; right: 8px; font-size: 9px; font-weight: 900; color: #666; }
         }
     </style>
 </head>
